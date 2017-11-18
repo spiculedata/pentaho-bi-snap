@@ -97,8 +97,8 @@ class MavenPlugin(snapcraft.plugins.jdk.JdkPlugin):
 
         for f in self.options.maven_targets:
             #src = os.path.join(self.builddir, f, 'target')
-            print("Looking in: "+os.path.join(self.builddir, f, 'assemblies/pentaho-server/target/'))
-            src = os.path.join(self.builddir, f, 'assemblies/pentaho-server/target/')
+            print("Looking in: "+os.path.join(self.builddir, f, 'assemblies/pentaho-server-manual/target/'))
+            src = os.path.join(self.builddir, f, 'assemblies/pentaho-server-manual/target/')
             #types = ('*.tar.gz', '*.zip', '.*.tgz', '*.war', '*.jar')
             #arfiles = []
             #for files in types:

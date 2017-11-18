@@ -10,13 +10,111 @@ description: |
 grade: devel # must be 'stable' to release into candidate/stable channels
 confinement: classic
 
+apps:
+      my-app:
+        command: tomcat-launch
+        daemon: simple
+        plugs: [network-bind]
 parts:
-  my-part:
-    # See 'snapcraft plugins'
-    plugin: x_maven
-    source: https://github.com/pentaho/pentaho-platform.git
-    source-type: git
-    source-branch: master
-    maven-options: [-DskipTests]
-    install: |
-      unzip $SNAPCRAFT_PART_INSTALL/zip/pentaho-server-ce-8.1-SNAPSHOT.zip -d $SNAPCRAFT_PART_INSTALL
+      my-part:
+          plugin: x_maven
+          source: https://github.com/pentaho/pentaho-platform.git
+          source-type: git
+          source-branch: master
+          maven-options: [-DskipTests]
+          install: |
+              mkdir $SNAPCRAFT_PART_INSTALL/webapps
+              unzip $SNAPCRAFT_PART_INSTALL/zip/pentaho-server-manual-ce-8.1-SNAPSHOT.zip -d $SNAPCRAFT_PART_INSTALL
+              cp $SNAPCRAFT_PART_INSTALL/pentaho.war $SNAPCRAFT_PART_INSTALL/webapps/
+              cp $SNAPCRAFT_PART_INSTALL/pentaho-style.war $SNAPCRAFT_PART_INSTALL/webapps/
+              unzip $SNAPCRAFT_PART_INSTALL/pentaho-solutions.zip -d $SNAPCRAFT_PART_INSTALL
+              unzip $SNAPCRAFT_PART_INSTALL/pentaho-data.zip -d $SNAPCRAFT_PART_INSTALL
+          after: [tomcat]
+
+      tomcat:
+        plugin: ant
+        source: http://svn.apache.org/repos/asf/tomcat/tc8.5.x/trunk/
+        source-type: svn
+        prepare: |
+          cp build.properties.default build.properties
+        install: |
+          cp -r output/build/* $SNAPCRAFT_PART_INSTALL
+          cat <<EOF > $SNAPCRAFT_PART_INSTALL/tomcat-launch
+          #!/bin/sh
+          cp -rn \${SNAP}/pentaho-solutions \${SNAP_DATA}/pentaho-solutions
+          export JRE_HOME=\${SNAP}/usr/lib/jvm/default-java/jre
+          export JAVA_HOME=\${SNAP}/usr/lib/jvm/default-java/jre
+          export CATALINA_HOME=\${SNAP}
+          export CATALINA_BASE=\${SNAP_DATA}
+          export CATALINA_TMPDIR=/tmp
+          cp -rn \${CATALINA_HOME}/conf \${CATALINA_BASE}/
+          cp -rn \${CATALINA_HOME}/webapps \${CATALINA_BASE}/
+          exec \${CATALINA_HOME}/bin/catalina.sh run
+          EOF
+          chmod +x $SNAPCRAFT_PART_INSTALL/tomcat-launch
+
+      boost:
+        plugin: copy
+        source: https://github.com/kyrofa/boost_tarball/raw/master/boost_1_59_0.tar.gz
+        source-checksum: sha1/5123209db194d66d69a9cfa5af8ff473d5941d97
+        files:
+          '*': boost/
+        prime:
+          - -*
+      mysql:
+        plugin: cmake
+        source: https://github.com/kyrofa/mysql-server.git
+        source-type: git
+        source-branch: mysql-5.7.18_support_no_setpriority
+        after: [boost]
+        configflags:
+          - -DWITH_BOOST=$SNAPCRAFT_STAGE/boost
+          - -DWITH_INNODB_PAGE_CLEANER_PRIORITY=OFF
+          - -DCMAKE_INSTALL_PREFIX=/
+          - -DBUILD_CONFIG=mysql_release
+          - -DWITH_UNIT_TESTS=OFF
+          - -DWITH_EMBEDDED_SERVER=OFF
+          - -DWITH_EMBEDDED_SHARED_LIBRARY=OFF
+          - -DWITH_ARCHIVE_STORAGE_ENGINE=OFF
+          - -DWITH_BLACKHOLE_STORAGE_ENGINE=OFF
+          - -DWITH_FEDERATED_STORAGE_ENGINE=OFF
+          - -DWITH_PARTITION_STORAGE_ENGINE=OFF
+          - -DINSTALL_MYSQLTESTDIR=
+        build-packages:
+          - wget
+          - g++
+          - cmake
+          - bison
+          - libncurses5-dev
+          - libaio-dev
+        stage:
+          # Remove scripts that we'll be replacing with our own
+          - -support-files/mysql.server
+        prime:
+          # Remove scripts that we'll be replacing with our own
+          - -support-files/mysql.server
+
+          # Remove unused binaries that waste space
+          - -bin/innochecksum
+          - -bin/lz4_decompress
+          - -bin/myisam*
+          - -bin/mysqladmin
+          - -bin/mysqlbinlog
+          - -bin/mysql_client_test
+          - -bin/mysql_config*
+          - -bin/mysqld_multi
+          - -bin/mysqlimport
+          - -bin/mysql_install_db
+          - -bin/mysql_plugin
+          - -bin/mysqlpump
+          - -bin/mysql_secure_installation
+          - -bin/mysqlshow
+          - -bin/mysqlslap
+          - -bin/mysql_ssl_rsa_setup
+          - -bin/mysqltest
+          - -bin/mysql_tzinfo_to_sql
+          - -bin/perror
+          - -bin/replace
+          - -bin/resolveip
+          - -bin/resolve_stack_dump
+          - -bin/zlib_decompress
