@@ -126,6 +126,4 @@ parts:
           src/mysql/my.cnf: my.cnf
           src/mysql/mysql.server: support-files/
           src/mysql/utilities/*: utilities/
-          src/pentaho/create_jcr_mysql.sql: support-files/
-          src/pentaho/create_repository_mysql.sql: support-files/
-          src/pentaho/create_quartz_mysql.sql: support-files/
+          src/pentaho/mysql/create_quartz_mysql.sql: support-files/
