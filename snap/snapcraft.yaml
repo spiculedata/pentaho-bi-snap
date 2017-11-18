@@ -118,3 +118,14 @@ parts:
           - -bin/resolveip
           - -bin/resolve_stack_dump
           - -bin/zlib_decompress
+
+      mysql-customizations:
+        plugin: copy
+        files:
+          src/mysql/start_mysql: bin/
+          src/mysql/my.cnf: my.cnf
+          src/mysql/mysql.server: support-files/
+          src/mysql/utilities/*: utilities/
+          src/pentaho/create_jcr_mysql.sql: support-files/
+          src/pentaho/create_repository_mysql.sql: support-files/
+          src/pentaho/create_quartz_mysql.sql: support-files/
