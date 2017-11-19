@@ -127,7 +127,7 @@ wait_for_mysql
 # Check and upgrade mysql tables if necessary. This will return 0 if the upgrade
 # succeeded, in which case we need to restart mysql.
 echo "Checking/upgrading mysql tables if necessary..."
-mysql_upgrade --defaults-file=$root_option_file
+bin/mysql_upgrade --defaults-file=$root_option_file
 if [ $? -eq 0 ]; then
 	echo "Restarting mysql server after upgrade..."
 	$SNAP/support-files/mysql.server restart
@@ -136,6 +136,9 @@ if [ $? -eq 0 ]; then
 	wait_for_mysql
 fi
 
+mysql_set_hibernate_password
+mysql_set_jackrabbit_password
+mysql_set_context
 # If this was a new installation, wait until the server is all up and running
 # before saving off the pentaho user's password. This way the presence of the
 # file can be used as a signal that mysql is ready to be used.

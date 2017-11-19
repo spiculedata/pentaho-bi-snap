@@ -39,9 +39,9 @@ parts:
           source-branch: master
           maven-options: [-DskipTests]
           install: |
-              mkdir $SNAPCRAFT_PART_INSTALL/webapps
+              mkdir -p $SNAPCRAFT_PART_INSTALL/webapps/pentaho
               unzip $SNAPCRAFT_PART_INSTALL/zip/pentaho-server-manual-ce-8.1-SNAPSHOT.zip -d $SNAPCRAFT_PART_INSTALL
-              cp $SNAPCRAFT_PART_INSTALL/pentaho.war $SNAPCRAFT_PART_INSTALL/webapps/
+              unzip $SNAPCRAFT_PART_INSTALL/pentaho.war -d $SNAPCRAFT_PART_INSTALL/webapps/pentaho
               cp $SNAPCRAFT_PART_INSTALL/pentaho-style.war $SNAPCRAFT_PART_INSTALL/webapps/
               unzip $SNAPCRAFT_PART_INSTALL/pentaho-solutions.zip -d $SNAPCRAFT_PART_INSTALL
               unzip $SNAPCRAFT_PART_INSTALL/pentaho-data.zip -d $SNAPCRAFT_PART_INSTALL
@@ -142,4 +142,10 @@ parts:
           src/mysql/my.cnf: my.cnf
           src/mysql/mysql.server: support-files/
           src/mysql/utilities/*: utilities/
+          src/pentaho/mysql/mysql-connector-java-5.1.44-bin.jar: lib/
           src/pentaho/mysql/create_quartz_mysql.sql: support-files/
+          src/pentaho/config/context.xml: webapps/pentaho/META-INF/
+          src/pentaho/config/hibernate-settings.xml: pentaho-solutions/system/hibernate
+          src/pentaho/config/mysql5.hibernate.cfg.xml: pentaho-solutions/system/hibernate
+          src/pentaho/config/quartz.properties: pentaho-solutions/system/quartz
+          src/pentaho/config/repository.xml: pentaho-solutions/system/jackrabbit/

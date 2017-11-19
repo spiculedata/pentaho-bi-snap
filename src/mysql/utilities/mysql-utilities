@@ -48,3 +48,37 @@ mysql_get_pentaho_password()
 		echo ""
 	fi
 }
+
+mysql_set_quartz_password()
+{
+   
+
+}
+
+mysql_set_hibernate_password()
+{
+	echo -n "Setting hibernate password"
+	password = mysql_get_pentaho_password
+    sed -i "s/{placeholder}/$password/g" $SNAP_DATA/pentaho-solutions/system/hibernate/mysql5.hibernate.cfg.xml
+}
+
+
+mysql_set_audit_log()
+{
+
+
+}
+
+mysql_set_jackrabbit_password()
+{
+	echo -n "Setting jcr password"
+	password = mysql_get_pentaho_password
+	sed -i "s/{placeholder}/$password/g" $SNAP_DATA/pentaho-solutions/systems/jackrabbit/repository.xml
+}
+
+mysql_set_context()
+{
+	echo -n "Setting context password"
+	password = mysql_get_pentaho_password
+	sed -i "s/{placeholder}/$password/g" $SNAP_DATA/webapps/pentaho/META-INF/context.xml
+}
