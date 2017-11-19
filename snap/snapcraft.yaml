@@ -17,7 +17,7 @@ apps:
         plugs: [network-bind]
       
       mysql:
-       command: start_mysql
+       command: bin/start_mysql
        stop-command: support-files/mysql.server stop
        daemon: simple
        restart-condition: always
@@ -25,11 +25,11 @@ apps:
 
   # MySQL client
       mysql-client:
-        command: mysql --defaults-file=$SNAP_DATA/mysql/root.ini
+        command: bin/mysql --defaults-file=$SNAP_DATA/mysql/root.ini
         plugs: [network, network-bind]
 
       mysqldump:
-        command: mysqldump --defaults-file=$SNAP_DATA/mysql/root.ini --lock-tables nextcloud
+        command: bin/mysqldump --defaults-file=$SNAP_DATA/mysql/root.ini --lock-tables nextcloud
         plugs: [network, network-bind]
 parts:
       my-part:
