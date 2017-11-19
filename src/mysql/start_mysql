@@ -54,11 +54,12 @@ SQL
 		rm -rf $SNAP_DATA/mysql/*
 	fi
 
-	echo -n "Setting up users and pentaho repository database... "
+
+	echo -n "Setting up users and pentaho quartz database... "
 	$SNAP/bin/mysql --defaults-file=$root_option_file <<SQL
-CREATE USER 'jcr_user'@'localhost' IDENTIFIED BY '$pentaho_password';
-CREATE DATABASE jackrabbit;
-GRANT ALL PRIVILEGES ON jackrabbit.* TO 'jcr_user'@'localhost' IDENTIFIED BY '$pentaho_password';
+CREATE USER 'hibuser'@'localhost' IDENTIFIED BY '$pentaho_password';
+CREATE DATABASE hibernate;
+GRANT ALL PRIVILEGES ON hibernate.* TO 'hibuser'@'localhost' IDENTIFIED BY '$pentaho_password';
 SQL
 	if [ $? -eq 0 ]; then
 		echo "done."
@@ -70,9 +71,9 @@ SQL
 
 	echo -n "Setting up users and pentaho quartz database... "
 	$SNAP/bin/mysql --defaults-file=$root_option_file <<SQL
-CREATE USER 'hibuser'@'localhost' IDENTIFIED BY '$pentaho_password';
-CREATE DATABASE hibernate;
-GRANT ALL PRIVILEGES ON hibernate.* TO 'hibuser'@'localhost' IDENTIFIED BY '$pentaho_password';
+CREATE USER 'pentaho_user'@'localhost' IDENTIFIED BY '$pentaho_password';
+CREATE DATABASE quartz;
+GRANT ALL PRIVILEGES ON quartz.* TO 'pentaho_user'@'localhost' IDENTIFIED BY '$pentaho_password';
 SQL
 	if [ $? -eq 0 ]; then
 		echo "done."
@@ -92,12 +93,12 @@ SQL
 		rm -rf $SNAP_DATA/mysql/*
 	fi
 
-	echo -n "Setting up users and pentaho quartz database... "
+	echo -n "Setting up users and pentaho repository database... "
 	$SNAP/bin/mysql --defaults-file=$root_option_file <<SQL
 ALTER USER 'root'@'localhost' IDENTIFIED BY '$root_password';
-CREATE USER 'pentaho_user'@'localhost' IDENTIFIED BY '$pentaho_password';
-CREATE DATABASE quartz;
-GRANT ALL PRIVILEGES ON quartz.* TO 'pentaho_user'@'localhost' IDENTIFIED BY '$pentaho_password';
+CREATE USER 'jcr_user'@'localhost' IDENTIFIED BY '$pentaho_password';
+CREATE DATABASE jackrabbit;
+GRANT ALL PRIVILEGES ON jackrabbit.* TO 'jcr_user'@'localhost' IDENTIFIED BY '$pentaho_password';
 SQL
 	if [ $? -eq 0 ]; then
 		echo "done."
