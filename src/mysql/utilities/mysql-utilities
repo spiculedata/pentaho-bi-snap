@@ -39,7 +39,7 @@ mysql_set_pentaho_password()
 	chmod 600 "$PENTAHO_PASSWORD_FILE"
 }
 
-mysql_get_nextcloud_password()
+mysql_get_pentaho_password()
 {
 	if [ -f "$PENTAHO_PASSWORD_FILE" ]; then
 		cat "$PENTAHO_PASSWORD_FILE"

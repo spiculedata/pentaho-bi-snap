@@ -42,7 +42,6 @@ if [ $new_install = true ]; then
 	# 4) Grant the pentaho user privileges on the pentaho database
 	echo -n "Setting up users and pentaho database... "
 	$SNAP/bin/mysql --defaults-file=$root_option_file <<SQL
-ALTER USER 'root'@'localhost' IDENTIFIED BY '$root_password';
 CREATE USER 'pentaho'@'localhost' IDENTIFIED BY '$pentaho_password';
 CREATE DATABASE pentaho;
 GRANT ALL PRIVILEGES ON pentaho.* TO 'pentaho'@'localhost' IDENTIFIED BY '$pentaho_password';
@@ -57,7 +56,6 @@ SQL
 
 	echo -n "Setting up users and pentaho repository database... "
 	$SNAP/bin/mysql --defaults-file=$root_option_file <<SQL
-ALTER USER 'root'@'localhost' IDENTIFIED BY '$root_password';
 CREATE USER 'jcr_user'@'localhost' IDENTIFIED BY '$pentaho_password';
 CREATE DATABASE jackrabbit;
 GRANT ALL PRIVILEGES ON jackrabbit.* TO 'jcr_user'@'localhost' IDENTIFIED BY '$pentaho_password';
@@ -72,11 +70,20 @@ SQL
 
 	echo -n "Setting up users and pentaho quartz database... "
 	$SNAP/bin/mysql --defaults-file=$root_option_file <<SQL
-ALTER USER 'root'@'localhost' IDENTIFIED BY '$root_password';
 CREATE USER 'hibuser'@'localhost' IDENTIFIED BY '$pentaho_password';
 CREATE DATABASE hibernate;
 GRANT ALL PRIVILEGES ON hibernate.* TO 'hibuser'@'localhost' IDENTIFIED BY '$pentaho_password';
 SQL
+	if [ $? -eq 0 ]; then
+		echo "done."
+	else
+		echo "Failed to initialize-- reverting..."
+		$SNAP/support-files/mysql.server stop
+		rm -rf $SNAP_DATA/mysql/*
+	fi
+
+	echo -n "Setting up users and pentaho jcr database... "
+	$SNAP/bin/mysql --defaults-file=$root_option_file < $SNAP/support-files/create_quartz_mysql.sql
 	if [ $? -eq 0 ]; then
 		echo "done."
 	else
@@ -100,15 +107,7 @@ SQL
 		rm -rf $SNAP_DATA/mysql/*
 	fi
 
-	echo -n "Setting up users and pentaho jcr database... "
-	$SNAP/bin/mysql --defaults-file=$root_option_file < $SNAP/support-files/create_quartz_mysql.sql
-	if [ $? -eq 0 ]; then
-		echo "done."
-	else
-		echo "Failed to initialize-- reverting..."
-		$SNAP/support-files/mysql.server stop
-		rm -rf $SNAP_DATA/mysql/*
-	fi
+
 
 
 
