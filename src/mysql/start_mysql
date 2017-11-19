@@ -7,7 +7,7 @@ new_install=false
 
 # Make sure the database is initialized (this is safe to run if already
 # initialized)
-mysqld --initialize-insecure --basedir="$SNAP" --datadir="$SNAP_DATA/mysql" --lc-messages-dir="$SNAP/share"
+$SNAP/bin/mysqld --initialize-insecure --basedir="$SNAP" --datadir="$SNAP_DATA/mysql" --lc-messages-dir="$SNAP/share"
 
 # If the above command succeeded, it means this is a new installation.
 if [ $? -eq 0 ]; then
@@ -41,7 +41,7 @@ if [ $new_install = true ]; then
 	# 3) Create the pentaho database
 	# 4) Grant the pentaho user privileges on the pentaho database
 	echo -n "Setting up users and pentaho database... "
-	mysql --defaults-file=$root_option_file <<SQL
+	$SNAP/bin/mysql --defaults-file=$root_option_file <<SQL
 ALTER USER 'root'@'localhost' IDENTIFIED BY '$root_password';
 CREATE USER 'pentaho'@'localhost' IDENTIFIED BY '$pentaho_password';
 CREATE DATABASE pentaho;
@@ -56,7 +56,7 @@ SQL
 	fi
 
 	echo -n "Setting up users and pentaho repository database... "
-	mysql --defaults-file=$root_option_file <<SQL
+	$SNAP/bin/mysql --defaults-file=$root_option_file <<SQL
 ALTER USER 'root'@'localhost' IDENTIFIED BY '$root_password';
 CREATE USER 'jcr_user'@'localhost' IDENTIFIED BY '$pentaho_password';
 CREATE DATABASE jackrabbit;
@@ -71,7 +71,7 @@ SQL
 	fi
 
 	echo -n "Setting up users and pentaho quartz database... "
-	mysql --defaults-file=$root_option_file <<SQL
+	$SNAP/bin/mysql --defaults-file=$root_option_file <<SQL
 ALTER USER 'root'@'localhost' IDENTIFIED BY '$root_password';
 CREATE USER 'hibuser'@'localhost' IDENTIFIED BY '$pentaho_password';
 CREATE DATABASE hibernate;
@@ -86,7 +86,7 @@ SQL
 	fi
 
 	echo -n "Setting up users and pentaho quartz database... "
-	mysql --defaults-file=$root_option_file <<SQL
+	$SNAP/bin/mysql --defaults-file=$root_option_file <<SQL
 ALTER USER 'root'@'localhost' IDENTIFIED BY '$root_password';
 CREATE USER 'pentaho_user'@'localhost' IDENTIFIED BY '$pentaho_password';
 CREATE DATABASE quartz;
@@ -101,7 +101,7 @@ SQL
 	fi
 
 	echo -n "Setting up users and pentaho jcr database... "
-	mysql --defaults-file=$root_option_file < $SNAP/support-files/create_quartz_mysql.sql
+	$SNAP/bin/mysql --defaults-file=$root_option_file < $SNAP/support-files/create_quartz_mysql.sql
 	if [ $? -eq 0 ]; then
 		echo "done."
 	else
