@@ -136,15 +136,16 @@ if [ $? -eq 0 ]; then
 	wait_for_mysql
 fi
 
-mysql_set_hibernate_password
-mysql_set_jackrabbit_password
-mysql_set_context
 # If this was a new installation, wait until the server is all up and running
 # before saving off the pentaho user's password. This way the presence of the
 # file can be used as a signal that mysql is ready to be used.
 if [ $new_install = true ]; then
 	mysql_set_pentaho_password "$pentaho_password"
 fi
+
+mysql_set_hibernate_password
+mysql_set_jackrabbit_password
+mysql_set_context
 
 # Wait here until mysql exits (turn a forking service into simple). This is
 # only needed for Ubuntu Core 15.04, as 16.04 supports forking services.
