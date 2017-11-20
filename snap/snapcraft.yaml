@@ -45,6 +45,12 @@ parts:
               cp $SNAPCRAFT_PART_INSTALL/pentaho-style.war $SNAPCRAFT_PART_INSTALL/webapps/
               unzip $SNAPCRAFT_PART_INSTALL/pentaho-solutions.zip -d $SNAPCRAFT_PART_INSTALL
               unzip $SNAPCRAFT_PART_INSTALL/pentaho-data.zip -d $SNAPCRAFT_PART_INSTALL
+          stage:
+              - -pentaho-solutions/system/jackrabbit/repository.xml
+              - -webapps/pentaho/META-INF/context.xml
+              - -pentaho-solutions/system/hibernate/hibernate-settings.xml
+              - -pentaho-solutions/system/hibernate/mysql5.hibernate.cfg.xml
+              - -pentaho-solutions/system/quartz/quartz.properties
           after: [tomcat]
 
       tomcat:
@@ -145,9 +151,9 @@ parts:
           src/pentaho/mysql/mysql-connector-java-5.1.44-bin.jar: lib/
           src/pentaho/mysql/create_quartz_mysql.sql: support-files/
           src/pentaho/config/context.xml: webapps/pentaho/META-INF/
-          src/pentaho/config/hibernate-settings.xml: pentaho-solutions/system/hibernate
-          src/pentaho/config/mysql5.hibernate.cfg.xml: pentaho-solutions/system/hibernate
-          src/pentaho/config/quartz.properties: pentaho-solutions/system/quartz
+          src/pentaho/config/hibernate-settings.xml: pentaho-solutions/system/hibernate/
+          src/pentaho/config/mysql5.hibernate.cfg.xml: pentaho-solutions/system/hibernate/
+          src/pentaho/config/quartz.properties: pentaho-solutions/system/quartz/
           src/pentaho/config/repository.xml: pentaho-solutions/system/jackrabbit/
         after: [pentaho]
 
