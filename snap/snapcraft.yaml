@@ -1,20 +1,17 @@
-name: pentaho-biserver # you probably want to 'snapcraft register <name>'
-version: '0.1' # just for humans, typically '1.2+git' or '1.3.2'
-summary: Single-line elevator pitch for your amazing snap # 79 char long summary
+name: pentaho-biserver-spicule
+version: '8.0'
+summary: Pentaho BI Server Community Edition
 description: |
-  This is my-snap's description. You have a paragraph or two to tell the
-  most important story about your snap. Keep it under 100 words though,
-  we live in tweetspace and your description wants to look good in the snap
-  store.
+     BI Server by Pentaho for data visualisation and analysis.
 
-grade: devel # must be 'stable' to release into candidate/stable channels
-confinement: classic
+grade: devel
+confinement: devmode
 
 apps:
       pentaho:
         command: tomcat-launch
         daemon: simple
-        plugs: [network-bind]
+        plugs: [network,network-bind]
       
       mysql:
        command: bin/start_mysql
@@ -36,11 +33,11 @@ parts:
           plugin: x_maven
           source: https://github.com/pentaho/pentaho-platform.git
           source-type: git
-          source-branch: master
+          source-branch: 8.0.0.0
           maven-options: [-DskipTests]
           install: |
               mkdir -p $SNAPCRAFT_PART_INSTALL/webapps/pentaho
-              unzip $SNAPCRAFT_PART_INSTALL/zip/pentaho-server-manual-ce-8.1-SNAPSHOT.zip -d $SNAPCRAFT_PART_INSTALL
+              unzip $SNAPCRAFT_PART_INSTALL/zip/pentaho-server-manual-ce-8.0-SNAPSHOT.zip -d $SNAPCRAFT_PART_INSTALL
               unzip $SNAPCRAFT_PART_INSTALL/pentaho.war -d $SNAPCRAFT_PART_INSTALL/webapps/pentaho
               cp $SNAPCRAFT_PART_INSTALL/pentaho-style.war $SNAPCRAFT_PART_INSTALL/webapps/
               unzip $SNAPCRAFT_PART_INSTALL/pentaho-solutions.zip -d $SNAPCRAFT_PART_INSTALL
@@ -148,6 +145,8 @@ parts:
           src/mysql/my.cnf: my.cnf
           src/mysql/mysql.server: support-files/
           src/mysql/utilities/*: utilities/
+          src/pentaho/h2/*: lib/
+          src/pentaho/hsql/*: lib/
           src/pentaho/mysql/mysql-connector-java-5.1.44-bin.jar: lib/
           src/pentaho/mysql/create_quartz_mysql.sql: support-files/
           src/pentaho/config/context.xml: webapps/pentaho/META-INF/
