@@ -33,15 +33,20 @@ parts:
           plugin: x_maven
           source: https://github.com/pentaho/pentaho-platform.git
           source-type: git
-          source-branch: 8.0.0.0
-          maven-options: [-DskipTests]
+          #source-branch: 8.0.0.0
+          source-branch: master
+          maven-options: [-DskipTests -Dcheckstyle.skip]
           install: |
               mkdir -p $SNAPCRAFT_PART_INSTALL/webapps/pentaho
               unzip $SNAPCRAFT_PART_INSTALL/zip/pentaho-server-manual-ce-8.0-SNAPSHOT.zip -d $SNAPCRAFT_PART_INSTALL
+              rm -rf $SNAPCRAFT_PART_INSTALL/zip/pentaho-server-manual-ce-8.0-SNAPSHOT.zip
               unzip $SNAPCRAFT_PART_INSTALL/pentaho.war -d $SNAPCRAFT_PART_INSTALL/webapps/pentaho
+              rm -rf SNAPCRAFT_PART_INSTALL/pentaho.war
               cp $SNAPCRAFT_PART_INSTALL/pentaho-style.war $SNAPCRAFT_PART_INSTALL/webapps/
               unzip $SNAPCRAFT_PART_INSTALL/pentaho-solutions.zip -d $SNAPCRAFT_PART_INSTALL
+              rm -rf $SNAPCRAFT_PART_INSTALL/pentaho-solutions.zip
               unzip $SNAPCRAFT_PART_INSTALL/pentaho-data.zip -d $SNAPCRAFT_PART_INSTALL
+              rm -rf $SNAPCRAFT_PART_INSTALL/pentaho-data.zip
           stage:
               - -pentaho-solutions/system/jackrabbit/repository.xml
               - -webapps/pentaho/META-INF/context.xml
