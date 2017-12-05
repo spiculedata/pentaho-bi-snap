@@ -33,8 +33,8 @@ parts:
           plugin: x_maven
           source: https://github.com/pentaho/pentaho-platform.git
           source-type: git
-          #source-branch: 8.0.0.0
-          source-branch: master
+          source-branch: 8.0.0.0
+          #source-branch: master
           maven-options: [-DskipTests -Dcheckstyle.skip]
           install: |
               mkdir -p $SNAPCRAFT_PART_INSTALL/webapps/pentaho
