@@ -1,5 +1,5 @@
 name: pentaho-biserver-spicule
-version: '8.0'
+version: '8.0.0.2'
 summary: Pentaho BI Server Community Edition
 description: |
      BI Server by Pentaho for data visualisation and analysis.
@@ -33,16 +33,20 @@ parts:
           plugin: x_maven
           source: https://github.com/pentaho/pentaho-platform.git
           source-type: git
-          source-branch: 8.0.0.0
+          source-branch: 8.0.0.2
           #source-branch: master
           maven-options: [-DskipTests -Dcheckstyle.skip]
+          stage-packages:
+              - openjdk-8-jdk
+              - fontconfig
           install: |
               mkdir -p $SNAPCRAFT_PART_INSTALL/webapps/pentaho
               unzip $SNAPCRAFT_PART_INSTALL/zip/pentaho-server-manual-ce-8.0-SNAPSHOT.zip -d $SNAPCRAFT_PART_INSTALL
               rm -rf $SNAPCRAFT_PART_INSTALL/zip/pentaho-server-manual-ce-8.0-SNAPSHOT.zip
               unzip $SNAPCRAFT_PART_INSTALL/pentaho.war -d $SNAPCRAFT_PART_INSTALL/webapps/pentaho
+              rm -rf $SNAPCRAFT_PART_INSTALL/pentaho.war
               #rm -rf SNAPCRAFT_PART_INSTALL/pentaho.war
-              cp $SNAPCRAFT_PART_INSTALL/pentaho-style.war $SNAPCRAFT_PART_INSTALL/webapps/
+              mv $SNAPCRAFT_PART_INSTALL/pentaho-style.war $SNAPCRAFT_PART_INSTALL/webapps/
               unzip $SNAPCRAFT_PART_INSTALL/pentaho-solutions.zip -d $SNAPCRAFT_PART_INSTALL
               rm -rf $SNAPCRAFT_PART_INSTALL/pentaho-solutions.zip
               unzip $SNAPCRAFT_PART_INSTALL/pentaho-data.zip -d $SNAPCRAFT_PART_INSTALL
@@ -65,6 +69,12 @@ parts:
           cp -r output/build/* $SNAPCRAFT_PART_INSTALL
           cat <<EOF > $SNAPCRAFT_PART_INSTALL/tomcat-launch
           #!/bin/sh
+          # Not good, needed for fontconfig
+          export XDG_DATA_HOME=$SNAP/usr/share
+          # Font Config
+          export FONTCONFIG_PATH=$SNAP/etc/fonts/config.d
+          export FONTCONFIG_FILE=$SNAP/etc/fonts/fonts.conf
+          export HOME=$SNAP_USER_DATA
           cp -rn \${SNAP}/pentaho-solutions \${SNAP_DATA}/pentaho-solutions
           export JRE_HOME=\${SNAP}/usr/lib/jvm/default-java/jre
           export JAVA_HOME=\${SNAP}/usr/lib/jvm/default-java/jre
