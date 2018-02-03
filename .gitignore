@@ -4,4 +4,4 @@ prime/
 snap/.snapcraft/
 snap/plugins/__pycache__/
 stage/
-
+*.xdelta3
