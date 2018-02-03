@@ -70,14 +70,16 @@ parts:
           cat <<EOF > $SNAPCRAFT_PART_INSTALL/tomcat-launch
           #!/bin/sh
           # Not good, needed for fontconfig
-          export XDG_DATA_HOME=$SNAP/usr/share
+          export XDG_DATA_HOME=\$SNAP/usr/share
           # Font Config
-          export FONTCONFIG_PATH=$SNAP/etc/fonts/config.d
-          export FONTCONFIG_FILE=$SNAP/etc/fonts/fonts.conf
-          export HOME=$SNAP_USER_DATA
+          export FONTCONFIG_PATH=\${SNAP}/etc/fonts/config.d
+          export FONTCONFIG_FILE=\${SNAP}/etc/fonts/fonts.conf
+          export HOME=\${SNAP_USER_DATA}
           cp -rn \${SNAP}/pentaho-solutions \${SNAP_DATA}/pentaho-solutions
-          export JRE_HOME=\${SNAP}/usr/lib/jvm/default-java/jre
-          export JAVA_HOME=\${SNAP}/usr/lib/jvm/default-java/jre
+          #export JRE_HOME=\${SNAP}/usr/lib/jvm/default-java/jre
+          #export JAVA_HOME=\${SNAP}/usr/lib/jvm/default-java/jre
+          export JAVA_HOME=\${SNAP}/usr/lib/jvm/java-8-openjdk-amd64
+          export PATH=$JAVA_HOME/jre/bin:$PATH
           export CATALINA_HOME=\${SNAP}
           export CATALINA_BASE=\${SNAP_DATA}
           export CATALINA_TMPDIR=/tmp
@@ -86,6 +88,9 @@ parts:
           exec \${CATALINA_HOME}/bin/catalina.sh run
           EOF
           chmod +x $SNAPCRAFT_PART_INSTALL/tomcat-launch
+        stage:
+          # Remove scripts that we'll be replacing with our own
+          - -bin/catalina.sh
 
       boost:
         plugin: copy
@@ -169,5 +174,6 @@ parts:
           src/pentaho/config/mysql5.hibernate.cfg.xml: pentaho-solutions/system/hibernate/
           src/pentaho/config/quartz.properties: pentaho-solutions/system/quartz/
           src/pentaho/config/repository.xml: pentaho-solutions/system/jackrabbit/
+          src/pentaho/catalina.sh: bin/
         after: [pentaho]
 
